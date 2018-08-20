@@ -1,0 +1,107 @@
+.header-box {
+  background-color: #f4f4f4;
+  height: 44px;
+  border-bottom: #d4d4d4 1px solid;/*no*/
+  line-height: 44px
+}
+.header-box.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%
+}
+
+.header-box.fixed
+i {
+  color: #33bd61
+}
+
+.header-box .header-back {
+  position: absolute;
+  padding: 0 10px;
+  font-size: 32px;/*px*/
+}
+
+.header-box .header-action {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  font-size: 32px;/*px*/
+  color: #33bd61
+}
+
+.header-box
+h1 {
+  text-align: center;
+  font-size: 32px;/*px*/
+}
+
+.wrapper {
+  padding-top: 45px
+}
+
+footer {
+  margin: 20px 0px
+}
+
+footer
+.links {
+  text-align: center
+}
+
+footer .links
+a {
+  display: inline-block;
+  width: 78px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 28px;/*px*/
+  color: #666;
+  border-right: 1px solid #ccc/*no*/
+}
+
+footer .links a:last-child {
+  border-right: none
+}
+
+footer
+.icp {
+  height: 50px;
+  line-height: 50px;
+  color: #999;
+  font-size: 24px;/*px*/
+  text-align: center
+}
+
+footer
+.app_download {
+  margin-top: 8px;
+  overflow: hidden;
+  height: 30px;
+  background: url(/site/m2015/images/common/logo.png) no-repeat 29px center;
+  background-size: 15px 15px;
+  padding: 0px 33px 0px 75px
+}
+
+footer .app_download
+span.txt {
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  color: #666;
+  font-size: 24px;/*px*/
+}
+
+footer .app_download
+a {
+  float: right;
+  padding: 0px 15px;
+  border: 1px solid #cecece;/*no*/
+  border-radius: 3px;
+  height: 28px;
+  line-height: 28px;
+  color: #666;
+  font-size: 24px;/*px*/
+}
+.header-back i{line-height: 44px !important;}
