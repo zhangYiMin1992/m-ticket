@@ -1,8 +1,8 @@
 .header-box {
     background-color: #f4f4f4;
-    height: 44px;
+    height: 90px;
     border-bottom: #d4d4d4 1px solid;/*no*/
-    line-height: 44px
+    line-height:90px
 }
 .header-box.fixed {
     position: fixed;
@@ -19,22 +19,22 @@ i {
 
 .header-box .header-back {
     position: absolute;
-    padding: 0 10px;
-    font-size: 32px;/*px*/
+    padding: 0 18px;
+    font-size: 28px;/*px*/
 }
 
 .header-box .header-action {
     position: absolute;
     right: 10px;
     top: 0;
-    font-size: 32px;/*px*/
+    font-size: 28px;/*px*/
     color: #33bd61
 }
 
 .header-box
 h1 {
     text-align: center;
-    font-size: 32px;/*px*/
+    font-size: 30px;/*px*/
 }
 
 .wrapper {
