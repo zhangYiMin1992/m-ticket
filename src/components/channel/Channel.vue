@@ -16,6 +16,9 @@
                     </div> 
                 </div>
             </div>
+            <div class="content-container">
+                <swipe-lazy></swipe-lazy>
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +30,7 @@ import Loading from "../common/Loading.vue";
 import wrapper from "../vue-components/components/wrapper/index.vue";
 import CityPicker from "../vue-components/city-picker/index.vue";
 import SearchPanel from "../common/SearchPanel.vue";
+import SwipeLazy from '../vue-components/components/swipe-lazy/index.vue'
 export default {
   name: "Channel",
   componentName: "Channel",
@@ -35,7 +39,8 @@ export default {
     Loading: Loading,
     wrapper: wrapper,
     "city-picker": CityPicker,
-    "search-panel": SearchPanel
+    "search-panel": SearchPanel,
+    'swipe-lazy': SwipeLazy
   },
   props: {
     isApp: {
