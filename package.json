@@ -7,13 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "cssnano": "^4.0.5",
-    "postcss-aspect-ratio-mini": "0.0.2",
+    "ajv-keywords": "^3.2.0",
+    "cssnano": "^4.1.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.0",
     "postcss-px-to-viewport": "0.0.3",
     "postcss-url": "^8.0.0",
-    "postcss-viewport-units": "^0.1.4",
     "postcss-write-svg": "^3.0.1",
     "vue": "^2.5.17",
     "vue-awesome": "^3.1.0"
@@ -24,6 +23,8 @@
     "css-loader": "^1.0.0",
     "cssnano-preset-advanced": "^4.0.0",
     "node-sass": "^4.9.3",
+    "postcss-aspect-ratio-mini": "0.0.2",
+    "postcss-viewport-units": "^0.1.4",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "vue-template-compiler": "^2.5.17",

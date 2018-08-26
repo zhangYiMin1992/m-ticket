@@ -166,7 +166,7 @@ input {
       padding: 3px 0;
       box-sizing: border-box;
       padding: 15px;
-      &:after {
+      &::after {
         content: "";
         display: block;
         position: absolute;
