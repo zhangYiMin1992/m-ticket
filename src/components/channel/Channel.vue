@@ -17,21 +17,23 @@
                 </div>
             </div>
             <div class="content-container">
-                <swipe-lazy></swipe-lazy>
+                <swipe-lazy :ad-list="adList"></swipe-lazy>
             </div>
         </div>
     </div>
 </template>
 <script>
+import Vue from 'vue'
 import Emitter from "../../mixins/emitter";
-
 import MHeader from "../common/Header.vue";
 import Loading from "../common/Loading.vue";
 import wrapper from "../vue-components/components/wrapper/index.vue";
 import CityPicker from "../vue-components/city-picker/index.vue";
 import SearchPanel from "../common/SearchPanel.vue";
-import SwipeLazy from '../vue-components/components/swipe-lazy/index.vue'
+import SwipeLazy from '../vue-components/components/swipe-lazy/index.vue';
+window.Event= new Vue();
 export default {
+
   name: "Channel",
   componentName: "Channel",
   components: {
@@ -50,8 +52,80 @@ export default {
   },
   data: function() {
     return {
-      loading: false
+      loading: false,
+      adList: [
+        {
+          adAppLinkUrl: "https://m.tuniu.com/menpiao/t_1994829",
+          adEventFlag: 0,
+          adGaTrack: null,
+          adImgUrl:
+            "https://m3.tuniucdn.com/fb2/t1/G5/M00/D6/DA/Cii-s1t2bv2IIaRRAACM_8ctklEAAMLWAO0uiQAAI0X92_w755_h0_c0_t0.jpeg",
+          adLinkUrl: "",
+          adMLinkUrl: "",
+          adMainTitle: "开学错峰",
+          adSubTitle: "",
+          adTagType: 0
+        },
+        {
+          adAppLinkUrl: "https://m.tuniu.com/menpiao/t_16734",
+          adEventFlag: 0,
+          adGaTrack: null,
+          adImgUrl:
+            "https://m2.tuniucdn.com/fb2/t1/G5/M00/77/0B/Cii-s1tEa7-IQlmBAAKQNLqwpfQAAJ9QAP7RYQAApBM09_w755_h0_c0_t0.jpeg",
+          adLinkUrl: "",
+          adMLinkUrl: "",
+          adMainTitle: "长隆欢乐世界",
+          adSubTitle: "",
+          adTagType: 0
+        },
+        {
+          adAppLinkUrl: "https://m.tuniu.com/menpiao/t_16934",
+          adEventFlag: 0,
+          adGaTrack: null,
+          adImgUrl:
+            "https://m.tuniucdn.com/fb2/t1/G5/M00/30/15/Cii-slpPTQmINr4zAADbkH_rARYAABtvQCTK6YAANuo20_w755_h0_c0_t0.jpeg",
+          adLinkUrl: "",
+          adMLinkUrl: "",
+          adMainTitle: "深圳欢乐谷",
+          adSubTitle: "",
+          adTagType: 0
+        },
+        {
+          adAppLinkUrl: "https://m.tuniu.com/menpiao/t_37794",
+          adEventFlag: 0,
+          adGaTrack: null,
+          adImgUrl:
+            "https://m4.tuniucdn.com/fb2/t1/G5/M00/30/15/Cii-s1pPTQmIAyDvAADqXiZXwfwAABtvQCUB04AAOp240_w755_h0_c0_t0.jpeg",
+          adLinkUrl: "",
+          adMLinkUrl: "",
+          adMainTitle: "深圳世界之窗",
+          adSubTitle: "",
+          adTagType: 0
+        },
+        {
+          adAppLinkUrl: "https://m.tuniu.com/menpiao/t_1994828",
+          adEventFlag: 0,
+          adGaTrack: null,
+          adImgUrl:
+            "https://m3.tuniucdn.com/fb2/t1/G5/M00/2C/0C/Cii-tFsaEZKILkx5AAJzT0mSfA0AAILAQH-2BAAAnNn857_w755_h0_c0_t0.png",
+          adLinkUrl: "",
+          adMLinkUrl: "",
+          adMainTitle: "美女与野兽",
+          adSubTitle: "",
+          adTagType: 0
+        }
+      ]
     };
+  },
+  mounted(){
+      this.swipe()
+      //this.swipelazy()
+  },
+
+  methods:{
+      swipe:function(){
+          this.$emit('init','')
+      }
   }
 };
 </script>

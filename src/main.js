@@ -15,4 +15,5 @@ Vue.directive('Sticky', Sticky)
 Vue.directive('back', back)
 new Vue({
   render: h => h(App)
-}).$mount('#temp_app')
+}).$mount('#temp_app');
+
