@@ -19,6 +19,7 @@
   </head>
   <body>
     <div id="temp_app"></div>
+    <div id="channel-placeholder"></div>
     <!-- built files will be auto injected -->
     <script>
         window.onload = function () {
@@ -27,5 +28,31 @@
             });
         }
     </script>
+    <script>
+      var ip="localhost";
+      var GDATA = {
+          cityLetter: "sh",//M站使用带过来的预定城市字母，跟目的地不同
+  //        cityCode  : "2500",//预定城市code
+  //        cityName  : "上海",//预定城市名字
+          cityCode  : "2500",//预定城市code
+          cityName  : "上海",//预定城市名字
+          urls      : {
+              "getTicketChannelInfoAjax": "http://m.tuniu.com/m2015/mpChannel/getTicketChannelLiteInfoAjax",
+  //            "getDestinationAjax"      : "http://proxy.test.tuniu.org/apis/m.tuniu.com/m2015/mpChannel/getDestinationAjax",
+  //            "suggestionAjax"          : "http://proxy.test.tuniu.org/apis/m.tuniu.com/m2015/mpChannel/SuggestionAjax",
+              "getTicketChannelInfoAjax": "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/getTicketChannelLiteInfoAjax",
+              "getDestinationAjax"      : "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/getDestinationAjax",
+              "suggestionAjax"          : "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/SuggestionAjax",
+              "checkHasTicketAjax"      : "",
+              "searchInfoAjax"    : "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/searchInfoAjax",
+              "getCmsTicketChannelInfoAjax":'http://'+ip+':3301/apis/m-p.tuniu.com/m2015/mpChannel/GetCmsTicketChannelInfoAjax'
+          }
+      }
+  
+      var G = {
+          isApp: false,
+          versionCmp: function(){ return 1}
+      }
+  </script>
   </body>
 </html>
