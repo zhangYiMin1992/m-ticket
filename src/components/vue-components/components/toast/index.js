@@ -53,4 +53,4 @@ export default function(options) {
             returnAnInstance(instance);
         }, duration);
     });
-};s
+};

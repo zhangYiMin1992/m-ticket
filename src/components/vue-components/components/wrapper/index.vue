@@ -5,7 +5,7 @@
 </template>
 <script>
 import Vue from 'vue'
-import {toggleBodyOverFlow} from '../../../../until/dom-opt'
+import {toggleBodyOverFlow} from '../../../../util/dom-opt'
 export default {
     name:'Wrapper',
     componentName:'Wrapper',

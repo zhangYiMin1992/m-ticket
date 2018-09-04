@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="channel-placeholder">
         <m-header :title="'景点门票'" :type="''" v-if="!isApp" :is-app="isApp"></m-header>
         <Loading v-show="loading"></Loading>
         <wrapper :wid="'CITY_PICKER'">
@@ -18,18 +18,23 @@
             </div>
             <div class="content-container">
                 <swipe-lazy :ad-list="adList"></swipe-lazy>
+                <div class="recom">
+                    <img src="../../styles/images/v3icon/recom@3x.png">
+                    <marquee></marquee>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
 import Vue from "vue";
-import cache from '../../lib/cache'
-import {checkStatus, parseJSON, exHandler} from '../../util/fetch';
-import GPS from '../../util/gps';
-import {query} from '../../util/stringify';
-import BI from '../../util/BI';
-import Toast from '../vue-components/components/toast/index';
+import bus from '../../bus';
+import cache from "../../lib/cache";
+import { checkStatus, parseJSON, exHandler } from "../../util/fetch";
+import GPS from "../../util/gps";
+import { query } from "../../util/stringify";
+import BI from "../../util/BI";
+import Toast from "../vue-components/components/toast/index";
 
 import Emitter from "../../mixins/emitter";
 import MHeader from "../common/Header.vue";
@@ -38,11 +43,18 @@ import wrapper from "../vue-components/components/wrapper/index.vue";
 import CityPicker from "../vue-components/city-picker/index.vue";
 import SearchPanel from "../common/SearchPanel.vue";
 import SwipeLazy from "../vue-components/components/swipe-lazy/index.vue";
+import Marquee from "../common/Marquee.vue"
+const DEST_DATA = "TICKET_DEST_DATA";
+const DEST_FOREIGN_DATA = "TICKET_DEST_FOREIGN_DATA";
+const HISTORY_CITY_ONLOCAL = "TICKET_HISTORY_CITY_ONLOCAL";
+const SELECTED_CITY = "TICKET_SELECTED_CITY";
+const CITY_SWITCH_TS = "TICKET_CITY_SWITCH_TS";
+const MAX_HISTORY_CITIES_NUM = 10;
+const EXPIRED = 3 * 60 * 60 * 1000;
+import DOMESTIC_CITIES from "../../cached-data/domestic-cities";
+import FOREIGN_CITIES from "../../cached-data/foreign-cities";
 
-import DOMESTIC_CITIES from '../../cached-data/domestic-cities';
-import FOREIGN_CITIES from '../../cached-data/foreign-cities';
-
- const PAGE_SIZE = 11;
+const PAGE_SIZE = 11;
 
 window.Event = new Vue();
 export default {
@@ -69,11 +81,12 @@ export default {
     "wrapper": wrapper,
     "city-picker": CityPicker,
     "search-panel": SearchPanel,
-    "swipe-lazy": SwipeLazy
+    "swipe-lazy": SwipeLazy,
+    'marquee':Marquee
   },
   data: function() {
     return {
-    //   控制加载页面显示
+      //   控制加载页面显示
       loading: false,
       listLoading: true,
       adList: [],
@@ -94,20 +107,20 @@ export default {
         lng: "", // GPS 经度
         isChina: true
       },
-     /**
-     * City Picker 相关数据
-     */
-    isShowCityPicker: false,
-    isShowChannel: true,
-    domesticCities: Object.freeze(DOMESTIC_CITIES),
-    overseaCities: Object.freeze(FOREIGN_CITIES),
-    historyCities: cache.store.get(HISTORY_CITY_ONLOCAL) || [],
-    cityPickerInit: true,
-    desData: null,
+      /**
+       * City Picker 相关数据
+       */
+      isShowCityPicker: false,
+      isShowChannel: true,
+      domesticCities: Object.freeze(DOMESTIC_CITIES),
+      overseaCities: Object.freeze(FOREIGN_CITIES),
+      historyCities: cache.store.get(HISTORY_CITY_ONLOCAL) || [],
+      cityPickerInit: true,
+      desData: null,
 
-    /**
-     * Search Panel 相关数据
-     */
+      /**
+       * Search Panel 相关数据
+       */
       result: [],
       noResult: false,
       page: 1,
@@ -120,15 +133,67 @@ export default {
   mounted() {
     let self = this;
     this.$nextTick(function() {
+      let city = cache.store.get(SELECTED_CITY);
+      let name = self.currentCity.name || (city && city.name) || "上海";
+      let code = self.currentCity.code || (city && city.code) || 2500;
+
       self.getTicketInfo({
-        name: "上海",
-        code: 2500
+        name: name,
+        code: code
       });
     });
   },
 
-  methods:{
-
+  methods: {
+    getTicketInfo(city) {
+      const self = this;
+      if (city) {
+        this.currentCity.code = city.code;
+        this.currentCity.name = city.name;
+      }
+      this.loading = true;
+      fetch(
+        GDATA.urls.getCmsTicketChannelInfoAjax +
+          query({
+            cityCode: this.currentCity.code,
+            isNearby: 0,
+            internalFlag: this.isChina * 1,
+            countryCode: city.countryCode || 0,
+            keyword: this.currentCity.name
+          })
+      )
+        .then(checkStatus)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(json) {
+          if (!json) throw new Error("请求错误！");
+          if (
+            Object.prototype.toString.call(json) === "[object Arrar]" &&
+            length == 0
+          ) {
+            self.loading = false;
+            self.adList = [];
+            self.recommendList = [];
+            self.isShowSwipe = false;
+            return;
+          }
+          self.handleTicketInfo(json);
+        })
+        .catch(exHandler);
+    },
+    handleTicketInfo({adList,popList,activityList,recommendList}) {
+        this.loading = false;
+        this.adList = adList;
+        this.hotScenic = popList;
+        this.activityList = activityList;
+        this.recommendList = recommendList;
+        this.isShowSwipe = Object.prototype.toString.call(adList) === '[object Array]' && adList.length > 0 ? true : false;
+        setTimeout(()=>{
+            bus.$emit('swipeLazy','');
+        },0)
+        
+    }
   }
 };
 </script>

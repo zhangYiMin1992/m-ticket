@@ -13,6 +13,7 @@
     </div>
 </template>
 <script>
+import bus from '../../../../bus';
 import { setStyle } from "wind-dom/src/style";
 import { addClass, removeClass } from "wind-dom/src/class";
 export default {
@@ -33,8 +34,16 @@ export default {
       touchLock: false
     };
   },
+  
   mounted() {
-    Event.$on('init',this.init())
+      let self = this;
+      this.$nextTick(function(){
+          bus.$on('swipeLazy',self.init())
+      })
+    
+  },
+  beforeDestroy(){
+      bus.$off('swipeLazy')
   },
   computed: {
     swipeBanner: function() {

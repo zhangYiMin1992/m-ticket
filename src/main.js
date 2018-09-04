@@ -5,7 +5,7 @@
 require('./styles/init.css')
 require('./styles/style.css')
 require('./styles/header.css')
-
+//var lazyload = require('./components/vue-components/components/vue-lazyload/index.js')报错
 import flexible from './util/flexible'
 import Vue from 'vue'
 import App from './components/channel/Channel.vue'
@@ -21,7 +21,7 @@ import {
 } from './filters/concat-url'
 import {highlight} from './filters/decorator'
 import {formatDistance, autoProtocol,imgAutoProtocolWebP} from './filters/string-tools'
-import Lazyload from './components/vue-components/components/vue-lazyload/index'
+//import lazyLoad from './components/vue-components/components/vue-lazyload/index.js'
 import Sticky from './directives/sticky'
 import back from './directives/back'
 
@@ -32,12 +32,12 @@ Vue.directive('focus',{
     updata: function(el){
         el.focus()
     }
-})
-Vue.use(Lazyload, {
-    preLoad: 1.2,
-    //loading: '//m.tuniu.com/site/m2015/images/ticket/ticket-loading.gif', // loading图片
-    attempt: 3
 });
+// Vue.use(lazyload, {      报错
+//     preLoad: 1.2,
+//     //loading: '//m.tuniu.com/site/m2015/images/ticket/ticket-loading.gif', // loading图片
+//     attempt: 3
+// });
 //Vue.use(asyncComp);
 
 var img = new Image();
@@ -51,7 +51,7 @@ Vue.filter('autoProtocol', autoProtocol);
 Vue.filter('imgAutoProtocolWebP', imgAutoProtocolWebP);
 Vue.filter('moreScenic', moreScenic);
 Vue.filter('searchLink', searchLink);
-Vue.filter('scenicThemeLink', scenicThemeLink);
+//Vue.filter('scenicThemeLink', scenicThemeLink);报错
 Vue.filter('scenicLink', scenicLink);
 Vue.filter('nearbyScenic', nearbyScenic);
 Vue.filter('matchProdImg', matchProdImg);
