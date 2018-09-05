@@ -18,9 +18,20 @@
             </div>
             <div class="content-container">
                 <swipe-lazy :ad-list="adList"></swipe-lazy>
-                <div class="recom">
+                <div class="recomm" v-if="isShowRecommend">
                     <img src="../../styles/images/v3icon/recom@3x.png">
-                    <marquee></marquee>
+                    <marquee>
+                        <li v-for="item in recommendList" :key="item.prdName">
+                            <a href="javascript:;">
+                                <div class="left">
+                                    <p>{{item.prdTitle}}</p>
+                                     <div class="price">￥<span>{{item.prdTuniuPrice
+}}</span>起</div>
+                                </div>
+                                <div class="right"><li></li></div>
+                            </a> 
+                        </li>                   
+                    </marquee>
                 </div>
             </div>
         </div>
@@ -142,6 +153,11 @@ export default {
         code: code
       });
     });
+  },
+  computed:{
+      isShowRecommend(){
+          return this.recommendList.length > 0
+      }
   },
 
   methods: {
@@ -362,5 +378,56 @@ input {
       }
     }
   }
+}
+.recomm{
+    width: 100%;
+    height: 80px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    background: #fff;
+    display: flex;
+    align-items:center;
+    color: #a5a5a5;
+    overflow: hidden;
+    img{
+        width: 160px;
+        height: 30px;
+        margin-right: 15px;
+    }
+    li{
+        a{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            position: relative;
+            .left{
+                flex: 1;
+                display: flex;
+                p{
+                    color: #051b28;
+                    font-size: 28px;
+                }
+                .price{
+                    color:#f60;
+                    margin-left: 5px;
+                    span{
+                        font-size: 40px;
+                    }
+                }
+            }
+            .right{
+                width: 16px;
+                height: 16px;
+                border-right: 1px solid #a5a5a5;
+                border-bottom: 1px solid #a5a5a5;
+                transform: rotate(-45deg);
+                
+            }
+        }
+        
+
+    }
 }
 </style>

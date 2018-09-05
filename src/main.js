@@ -77,6 +77,6 @@ citySelectBtn && (citySelectBtn.onclick = function () {
     app.$refs.channel.showCityPicker()
 });
 
-export default app
+//export default app
 
 

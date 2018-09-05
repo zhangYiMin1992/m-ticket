@@ -2,7 +2,7 @@
     <div id="banner" class="wap-banner" ref="swipe">
         <img alt="" src="//ssl4.tuniucdn.com/img/2016091314/index_v4/promote.png" style="position: absolute; left: 3px; bottom: 3px; z-index: 1; height: 9px;"> 
         <div class="wap-pic" ref="con">
-            <a href="item.adAppLinkUrl" v-for="(item,index) in swipeBanner" :key="index">
+            <a href="item.adAppLinkUrl" v-for="(item,index) in banner" :key="index">
                 <img :src="item.adImgUrl" v-if="index == 0">
                 <img :data-src="item.adImgUrl" v-else>
             </a>            
@@ -34,32 +34,35 @@ export default {
       touchLock: false
     };
   },
-  
-  mounted() {
-      let self = this;
-      this.$nextTick(function(){
-          bus.$on('swipeLazy',self.init())
-      })
-    
-  },
+
   beforeDestroy(){
-      bus.$off('swipeLazy')
+      //bus.$off('swipeLazy')
   },
   computed: {
-    swipeBanner: function() {
+    banner() {
       if (this.adList.length <= 1) {
         return this.adList;
+      }else{
+        let first = this.adList[0];
+        let last = this.adList[this.adList.length - 1];
+        let tempList = [];
+        tempList.push(last);
+        this.adList.forEach((v, k) => {
+            tempList.push(v);
+        });
+        tempList.push(first);
+        return tempList;
       }
-      let first = this.adList[0];
-      let last = this.adList[this.adList.length - 1];
-      let tempList = [];
-      tempList.push(last);
-      this.adList.forEach((v, k) => {
-        tempList.push(v);
-      });
-      tempList.push(first);
-      return tempList;
+      
     }
+  },
+    mounted() {
+      let self = this;
+      this.$nextTick(function(){
+          bus.$on('swipeLazy',()=>{
+            self.init()
+            })
+      })
   },
     methods: {
     css3: function () {
@@ -78,11 +81,12 @@ export default {
         return o
     },
     initData: function () {
-        this.length = this.swipeBanner.length;
+        this.length = this.banner.length;
         this.items = this.$refs.con.getElementsByTagName('a');
         this.index=1;
     },
     initPage: function () {
+        
         for (var i = 0; i < this.length; i++) {
             setStyle(this.items[i], this.css3({"transform": "translate3d(" + 100 * i + "%, 0, 0)"}));
         }
