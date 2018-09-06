@@ -25,13 +25,17 @@
                             <a href="javascript:;">
                                 <div class="left">
                                     <p>{{item.prdTitle}}</p>
-                                     <div class="price">￥<span>{{item.prdTuniuPrice
-}}</span>起</div>
+                                     <div class="price">￥<span>{{item.prdTuniuPrice}}</span>起</div>
                                 </div>
                                 <div class="right"><li></li></div>
                             </a> 
                         </li>                   
                     </marquee>
+                </div>
+                <activity-new :activity-list="activityList" v-if="!!activityList"></activity-new>
+                <div class="select-scenic">
+                    <p class="o-title">精选人气景点</p>
+                    <selected :hot-scenic="hotScenic" :is-app="isApp"></selected>
                 </div>
             </div>
         </div>
@@ -55,6 +59,9 @@ import CityPicker from "../vue-components/city-picker/index.vue";
 import SearchPanel from "../common/SearchPanel.vue";
 import SwipeLazy from "../vue-components/components/swipe-lazy/index.vue";
 import Marquee from "../common/Marquee.vue"
+import ActivityNew from './ActivityNew.vue';
+import selected from './Selected.vue';
+
 const DEST_DATA = "TICKET_DEST_DATA";
 const DEST_FOREIGN_DATA = "TICKET_DEST_FOREIGN_DATA";
 const HISTORY_CITY_ONLOCAL = "TICKET_HISTORY_CITY_ONLOCAL";
@@ -64,6 +71,7 @@ const MAX_HISTORY_CITIES_NUM = 10;
 const EXPIRED = 3 * 60 * 60 * 1000;
 import DOMESTIC_CITIES from "../../cached-data/domestic-cities";
 import FOREIGN_CITIES from "../../cached-data/foreign-cities";
+
 
 const PAGE_SIZE = 11;
 
@@ -93,7 +101,9 @@ export default {
     "city-picker": CityPicker,
     "search-panel": SearchPanel,
     "swipe-lazy": SwipeLazy,
-    'marquee':Marquee
+    'marquee':Marquee,
+    'activity-new':ActivityNew,
+    'selected':selected
   },
   data: function() {
     return {
@@ -422,12 +432,41 @@ input {
                 height: 16px;
                 border-right: 1px solid #a5a5a5;
                 border-bottom: 1px solid #a5a5a5;
-                transform: rotate(-45deg);
-                
+                transform: rotate(-45deg);               
             }
         }
-        
-
     }
+}
+.select-scenic{
+    background: #fff;
+    width: 100%;
+    .o-title{
+        font-size: 32px;
+        font-weight: bold;
+        color: #222;
+        text-align: center;
+        position: relative;
+        height: 100px;
+        line-height:100px;
+        &:before{
+            content: '';
+            display: block;
+            position: absolute;
+            width: 20px;
+            height: 1px;
+            border-bottom: 1px solid #222;
+            top: 50%;
+            left: 240px;
+        }
+        &:after{
+            content: '';
+            display: block;
+            position: absolute;
+            width: 20px;
+            border-bottom: 1px solid #222;
+            top: 50%;
+            right: 240px;
+        }
+    }   
 }
 </style>

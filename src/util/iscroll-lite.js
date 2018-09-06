@@ -1007,4 +1007,4 @@
         }
     };
     IScroll.utils = utils;
-    module.exports = IScroll;
+    export default IScroll;

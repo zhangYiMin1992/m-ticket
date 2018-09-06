@@ -6,6 +6,7 @@
     </div>    
 </template>
 <script>
+import pageVisibility from '../../util/pageVisibility'
 export default {
   data() {
     return {
@@ -37,6 +38,13 @@ export default {
           self.fixList();
           self.start();
       })
+      pageVisibility.visibilitychange(function() {
+        if(this.visibilityState=='hidden') {
+            self.destroyed();
+        }else{
+            self.start();
+        }
+    })
   },
   methods: {
     setTransform(ele, val) {
@@ -51,7 +59,7 @@ export default {
       ele.style.MozTransition = "-moz-" + val;
       ele.style.OTransition = "-o-" + val;
     },
-    destoryed(){
+    destroyed(){
         if(this.timer){
             clearInterval(this.timer);
             this.timer = null
@@ -70,7 +78,7 @@ export default {
         }
         this.$nextTick(()=>{
             this.height = this.$refs.container.offsetHeight / (this.length + 1)
-            console.log(this.height)
+        
         })
     },
     start(){
@@ -78,7 +86,7 @@ export default {
         if(this.direction === 'down'){
             this.quickjump(false);
         }
-        this.destoryed();
+        this.destroyed();
         this.timer = setInterval(()=>{
             if(self.direction === 'up'){
                 self.currentIndex += 1

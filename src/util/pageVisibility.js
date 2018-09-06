@@ -53,4 +53,4 @@ var pageVisibility = (function() {
         }
     };
 })(undefined);
-module.exports = pageVisibility;
+export default pageVisibility;
