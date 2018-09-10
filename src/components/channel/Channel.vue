@@ -33,9 +33,28 @@
                     </marquee>
                 </div>
                 <activity-new :activity-list="activityList" v-if="!!activityList"></activity-new>
-                <div class="select-scenic">
-                    <p class="o-title">精选人气景点</p>
+                <div class="select-scenic" v-if="hotScenic && isChina">
+                    <span class="o-title">精选人气景点</span>
                     <selected :hot-scenic="hotScenic" :is-app="isApp"></selected>
+                </div>
+                <div class="hot-scenic-new">
+                    <div class="bar-top clearfix">
+                        <div class="title"><span>上海精选</span></div>
+                        <a class="all">全部景点</a>
+                    </div>
+                    <div class="search-list-inner">
+                        <section class="search-list-container">
+                            <hot-scenic :list="result"
+                                        :is-app="isApp"
+                                        :list-loading='listLoading'
+                                        :no-result="noResult"
+                            ></hot-scenic>
+                        </section>
+                    </div>
+                    <div v-if="noResult" class="no-result">暂无景点</div>
+                    <div class="check-more">
+                        <a :href="currentCity | moreScenic(isApp)" class="check-more-link">查看更多</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,6 +80,7 @@ import SwipeLazy from "../vue-components/components/swipe-lazy/index.vue";
 import Marquee from "../common/Marquee.vue"
 import ActivityNew from './ActivityNew.vue';
 import selected from './Selected.vue';
+import HotScenic from './HotScenic.vue'
 
 const DEST_DATA = "TICKET_DEST_DATA";
 const DEST_FOREIGN_DATA = "TICKET_DEST_FOREIGN_DATA";
@@ -103,7 +123,8 @@ export default {
     "swipe-lazy": SwipeLazy,
     'marquee':Marquee,
     'activity-new':ActivityNew,
-    'selected':selected
+    'selected':selected,
+    'hot-scenic':HotScenic
   },
   data: function() {
     return {
@@ -162,6 +183,8 @@ export default {
         name: name,
         code: code
       });
+      self.getCurrentPosition(name, code);
+    
     });
   },
   computed:{
@@ -178,8 +201,7 @@ export default {
         this.currentCity.name = city.name;
       }
       this.loading = true;
-      fetch(
-        GDATA.urls.getCmsTicketChannelInfoAjax +
+      fetch(GDATA.urls.getCmsTicketChannelInfoAjax +
           query({
             cityCode: this.currentCity.code,
             isNearby: 0,
@@ -196,7 +218,7 @@ export default {
           if (!json) throw new Error("请求错误！");
           if (
             Object.prototype.toString.call(json) === "[object Arrar]" &&
-            length == 0
+            json.length == 0
           ) {
             self.loading = false;
             self.adList = [];
@@ -219,6 +241,110 @@ export default {
             bus.$emit('swipeLazy','');
         },0)
         
+    },
+    getGpsCityByCode(citiesObj, code){
+        var gpsCity = null;
+        for(var key in citiesObj){
+            var cities = citiesObj[key];
+            for(var i = 0, len = cities.length; i < len; i++){
+                if(code = cities[i].code){
+                    gpsCity = cities[i];
+                    break
+                }
+            }
+        }
+        return gpsCity
+    },
+    getCurrentPosition(initName,initCode){
+        const self = this; 
+        window.setTimeout(function(){
+            try{
+                GPS.getAutoGPS(function({name, letter, code, lat ='', lng = ''}){
+                    var gpsCity = self.getGpsCityByCode(self.domesticCities,code) || self.getGpsCityByCode(self.overseaCities, code);
+                    self.geoCity={
+                        name: name,
+                        letter: letter,
+                        code: code,
+                        lat: lat,
+                        lng: lng,
+                        isChina: gpsCity.isChina
+                    };
+                    console.log(11)
+                    self.getHotTicketInfo(initName, initCode);
+                    if(code == self.currentCity.code) return;
+                     let curTimestamp = +(new Data),
+                        lastTimestamp = cache.store.get(CITY_SWITCH_TS);
+                    // 用户选择间隔小于3小时,不提示
+                    if(lastTimestamp && (curTimestamp - lastTimestamp < EXPIRED)) return;
+                    
+                })
+
+            } catch(e){
+                self.getHotTicketInfo(initName, initCode);
+
+            }
+        },0)
+    },
+    getHotTicketInfo(name, code){
+        const self = this;
+        let location =`[${self.geoCity.lat},${self.geoCity.lng}]`;
+        if(self.geoCity.lng == "" && self.geoCity.lat == ""){
+            location = '[]';
+        }
+        let queryObj = {
+            d: `{"page":${this.page},"limit":${PAGE_SIZE},"keyword":"${name}","location":${location},"showNear":1}`,
+            c:`{"cc":${code}}`
+        };
+        fetch(GDATA.urls.searchInfoAjax + query(queryObj))
+            .then(checkStatus)
+            .then(function(response){
+                return response.json()
+            })
+            .then(function(json){
+                if(!json.success){
+                    self.noResult = true;
+                    throw new Error(json.msg || '请求失败')
+                }
+                self.noResult = json.data.list.length === 0 ? true : false;
+
+                if(json.data.list.length <= 10){
+                    self.isShowMore = false
+                } else {
+                    self.isShowMore = true
+                    json.data.list.pop()
+                }
+
+                if(json.data.list.length){
+                    self.result = [json.data.list]
+                } else {
+                    self.result = []
+                }
+
+                self.listLoading = false
+            })
+            .catch(exHandler)
+    },
+    citySelect(data){
+        if(!data.code) return ;
+        let historyCities = cache.store.get(HISTORY_CITY_ONLOCAL) || [];
+        for(var i = 0,len = historyCities.length; i < len; i++){
+            if(historyCities[i].code === data.code){
+                historyCities.splice(i, 1);
+                break
+            }
+        }
+        historyCities.unshift(data)
+        if(historyCities.length > MAX_HISTORY_CITIES_NUM){
+            historyCities.pop()
+        }
+         cache.store.put(HISTORY_CITY_ONLOCAL,historyCities);
+         cache.store.put(SELECTED_CITY,data)
+
+         this.isChina = data.isChina;
+         this.getTicketInfo(data);
+
+         this.getHotTicketInfo(data.name, data.code)
+
     }
   }
 };
@@ -439,12 +565,12 @@ input {
 }
 .select-scenic{
     background: #fff;
-    width: 100%;
+    width: 100%;  
+    text-align: center;
     .o-title{
         font-size: 32px;
         font-weight: bold;
         color: #222;
-        text-align: center;
         position: relative;
         height: 100px;
         line-height:100px;
@@ -456,7 +582,7 @@ input {
             height: 1px;
             border-bottom: 1px solid #222;
             top: 50%;
-            left: 240px;
+            left: -30px;
         }
         &:after{
             content: '';
@@ -465,8 +591,74 @@ input {
             width: 20px;
             border-bottom: 1px solid #222;
             top: 50%;
-            right: 240px;
+            right: -30px;
         }
     }   
+}
+.hot-scenic-new{
+    width: 100%;
+    padding-top: 50px;
+    background:#fff;
+    margin-top: 20px;
+}
+.bar-top{
+    text-align: center;
+    position: relative;
+    .title{
+        font-size: 32px;
+        font-weight: bold;
+        color: #222;
+        text-align: center;
+        span{
+            position: relative;
+            &:before{
+            content: '';
+            display: block;
+            position: absolute;
+            width: 20px;
+            height: 1px;
+            border-bottom: 1px solid #222;
+            top: 50%;
+            left: -30px;
+            }
+            &:after{
+                content: '';
+                display: block;
+                position: absolute;
+                width: 20px;
+                border-bottom: 1px solid #222;
+                top: 50%;
+                right:-30px;
+            }
+        }      
+    }
+    .all{
+        position: absolute;
+        color:#33bd61;
+        right: 24px;
+        font-size: 28px;
+        top: 0;
+    }
+}
+.search-list-inner{
+    background: #fff;
+    
+}
+.check-more{
+    width: 100%;
+    height: 90px;
+    text-align: center;
+    line-height: 90px;
+    a{
+        color: #33bd61;
+        font-size: 26px
+    }
+}
+.no-result {
+    font-size: 28px; /*px*/
+    width: 100%;
+    margin-bottom: 20px;
+    color: #bbb;
+    text-align: center;
 }
 </style>

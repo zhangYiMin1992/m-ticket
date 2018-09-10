@@ -85,6 +85,7 @@ export default {
     width: 100%;
     position: relative;
     padding-bottom: 40%;
+    overflow: hidden;
 }
 #scroller{
     position: absolute;
@@ -106,8 +107,6 @@ export default {
     -ms-text-size-adjust: none;
     -o-text-size-adjust: none;
     text-size-adjust: none;
-    width: 100%;
-    overflow: hidden;
     ul{
         padding:0 10px 20px 10px;
         white-space: nowrap;
