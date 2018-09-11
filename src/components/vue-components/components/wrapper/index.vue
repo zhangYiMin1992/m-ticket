@@ -1,6 +1,9 @@
 <template>
     <transition name="slide-right" @after-enter="afterEnter" @before-leave="beforeLeave">
-        <div class="vue-wrapper" v-show="show"></div>
+        <div class="vue-wrapper">
+            <slot></slot>
+        </div>
+        
     </transition>
 </template>
 <script>
@@ -62,7 +65,7 @@ export default {
 </script>
 <style lang="scss" scoped>
     .vue-wrapper{
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         right: 0;
