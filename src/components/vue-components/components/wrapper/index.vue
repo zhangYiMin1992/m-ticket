@@ -8,6 +8,7 @@
 </template>
 <script>
 import Vue from 'vue'
+import bus from '../../../../bus'
 import {toggleBodyOverFlow} from '../../../../util/dom-opt'
 export default {
     name:'Wrapper',
@@ -30,7 +31,7 @@ export default {
             self.$on('OPEN_RIGHT_SLIDER',function(){
                 self.open();
             });
-            self.$on('CLOSE_RIGHT-SLIDER',function(){
+            bus.$on('closeRight',function(){
                 self.close();
             });
             if(!self.wid)return

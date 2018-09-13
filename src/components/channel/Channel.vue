@@ -3,7 +3,15 @@
         <m-header :title="'景点门票'" :type="''" v-if="!isApp" :is-app="isApp"></m-header>
         <Loading v-show="loading"></Loading>
         <wrapper :wid="'CITY_PICKER'">
-            <city-picker></city-picker>
+            <city-picker
+                    :is-app="isApp"
+                    :domestic-cities="domesticCities"
+                    :oversea-cities="overseaCities"
+                    :geo-city="geoCity"
+                    :hide-city-box="hideCityBox"
+                    :is-show-city-picker="isShowCityPicker"
+                    :city-picker-init="cityPickerInit">
+            </city-picker>
         </wrapper>
         <search-panel></search-panel>
         <div calss="channel-container" id="main-container">
@@ -345,6 +353,9 @@ export default {
 
          this.getHotTicketInfo(data.name, data.code)
 
+    },
+    hideCityBox(){
+        bus.$emit('closeRight','')
     }
   }
 };
