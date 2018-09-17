@@ -9,24 +9,34 @@
                 <div class="search-input-ctn">
                     <i class="icon-search5 search_btn"></i>
                     <form>
-                        <input class="search-input" placeholder="请输入城市名称或拼音" autocomplete="false">
+                        <input v-model="cityName" @click="isMaskShow = true" class="search-input" name="q" id="searchContOpo" placeholder="请输入城市名称或拼音" autocomplete="off" required>
+                        <i class="icon-close clear-btn" v-show="isSearchListShow" @click="clearInput()"></i>
                     </form>                    
                 </div>
-                <span class="cancel" v-show="isMaskShow">取消</span>
+                <span class="cancel" v-show="isMaskShow" @click="cancel">取消</span>
+            </div>
+            <div class="search-list" v-show="isSearchListShow">
+                <ul class="letter-city-list">
+                    <li class="letter-name" v-for="(city,index) in filterCity" v-bind:key="index"
+                        v-bind:data-poiid="city.code" v-on:click="select(city)"
+                        v-bind:data-name="city.name">
+                        {{city.name}}
+                    </li>
+                </ul>
             </div>
             
             <div class="city-loading" v-show="cityLoading">
                 <span>正在加载中···</span>
             </div>
 
-            <div class="city-box">
+            <div class="city-box" v-show="!isMaskShow">
                 <div class="city-list">
-                    <div class="nav-container">
-                        <ul :class="['nav-tabs  clearfix',(secondSelected ? selected:'')]">
-                            <li :class="!secondSelected ? 'active' : ''" @click="selectDomestic" >
+                    <div  :class="['nav-container', (secondSelected ? 'selected' : '')]">
+                        <ul class="nav-tabs">
+                            <li :class="!secondSelected ? 'active' : ''"  @click="selectDomestic" >
                                 <span>境内</span>
                             </li>
-                            <li :class="secondSelected ? 'active' : ''" @click="selectOverseas">
+                            <li :class="secondSelected ? 'active' : ''"  @click="selectOverseas">
                                 <span>境外</span>
                             </li>
                         </ul>
@@ -59,14 +69,14 @@
                         </div>
                         <div class="location-title letter-list" v-for="item in citiesByLetters" :key="item.name">
                             <h2>{{item.letter.toUpperCase()}}</h2>
-                            <ul class="text-container">
-                                <li class="text-item" v-for="(city,index) in item.cities" :key="index">
-                                    <div class="item-title">{{city.name}}</div>
+                            <ul class="letter-city-list">
+                                <li class="letter-name" v-for="(city,index) in item.cities" :key="index">
+                                    {{city.name}}
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="tab-panel2">
+                    <div class="tab-panel2" v-show="secondSelected">
                         <div class="city-section">
                             <h2>热门推荐</h2>
                             <ul class="text-container">
@@ -77,9 +87,9 @@
                         </div>
                         <div class="location-title letter-list" v-for="item in citiesByLettersOversea" :key="item.letter">
                             <h2>{{item.letter.toUpperCase()}}</h2>
-                            <ul class="text-container">
-                                <li class="text-item" v-for="city in item.cities" :key="city.name">
-                                    <div class="item-title">{{city.name}}</div>
+                            <ul class="letter-city-list">
+                                <li class="letter-name" v-for="city in item.cities" :key="city.name">
+                                    {{city.name}}
                                 </li>
                             </ul>
                         </div>
@@ -99,7 +109,7 @@
     </div>
 </template>
 <script>
-import {searchCity} from './search';
+import searchCity from './search';
 import emitter from '../../../mixins/emitter';
 const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
 export default {
@@ -177,6 +187,17 @@ export default {
             self.normalizeData()
         })
     },
+    computed:{
+        filterCity(){
+            return searchCity(this.allCities,this.cityName)
+        }
+    },
+    watch:{
+        cityName:function (newV) {
+            if(!newV) return
+            this.isSearchListShow = true;
+        }
+    },
     methods:{
         normalizeData(){
             if(!this.domesticCities || !this.overseaCities) return
@@ -200,7 +221,7 @@ export default {
                         letter:letter.toUpperCase(),
                         cities:citiesOnLetter
                     })
-                    console.log(this.allCities.cities)
+                    
                 }
             }
 
@@ -229,7 +250,18 @@ export default {
         },
         selectOverseas(){
             this.secondSelected = true
-        }
+        },
+        clearInput(){
+            this.cityName = ''
+        },
+        cancel(){
+            this.cityName = '';
+            this.isMaskShow = false;
+            this.isSearchListShow = false;
+            
+
+        },
+        select(){}
     }
 }
 </script>
@@ -239,11 +271,9 @@ export default {
     position: absolute;
     flex-direction: column;
     width: 100%;
-    height: 100%;
     z-index: 200;
     top: 0;
     bottom: 0;
-    overflow-y: hidden;
     #dest-header{
         width: 100%;
         position: fixed;
@@ -294,7 +324,7 @@ export default {
 .search-input-ctn{
     position: relative;
     flex: 1;    
-    i{
+    .search_btn{
         font-size: 30px;
         color: #999;
         flex: 1;
@@ -309,6 +339,7 @@ export default {
     width: 100%;
     padding: 20px 20px 20px 60px;
     height: 68px;
+    -webkit-appearance: none;
 }
 .cancel{
     color: #666;
@@ -367,13 +398,20 @@ export default {
         transition: -webkit-transform .15s ease-in-out 0s;
         width: 50%;
     }
-    &.selected:after{
+    
+}
+.selected:after{
         transform: translate3d(100%,0,0)
     }
+.city-list{
+    overflow-y: scroll;
+    background: #fff;
 }
 .city-box{
     position: relative;
     margin-top: 110px;
+    display: flex;
+    flex: 1;
 }
 .city-list .city-section h2{
     color: #222;
@@ -405,9 +443,6 @@ export default {
         }
     }
 }
-.tab-panel2{
-    display: none
-}
 .letter-list h2{
     color: #222;
     background: #f5f5f5;
@@ -431,18 +466,39 @@ export default {
     }
 }
 .indexer-show {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 100px;
-        height: 100px;
-        line-height: 100px;
-        margin-left: -50px;
-        text-align: center;
-        color: #fff;
-        font-size: 60px; /*px*/
-        background: #2dbb55;
-        border-radius: 50%;
-        z-index: 2;
-    }
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    margin-left: -50px;
+    text-align: center;
+    color: #fff;
+    font-size: 60px; /*px*/
+    background: #2dbb55;
+    border-radius: 50%;
+    z-index: 2;
+}
+.letter-city-list{
+    padding: 0 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.letter-name{
+    height: 90px;
+    font-size: 30px;
+    line-height: 90px;
+    border-bottom: 1px solid #eee;
+}
+.clear-btn{
+    position: absolute;
+    right:20px;
+    bottom:20px;
+    font-size: 30px;
+    color: #999;
+}
+.search-list{
+    margin-top: 110px;
+}
 </style>

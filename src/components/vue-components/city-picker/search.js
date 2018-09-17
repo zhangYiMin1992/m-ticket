@@ -1,7 +1,7 @@
 /**
  * Created by danielhe on 7/29/16.
  */
-import {escapeRegex} from '../util/string-helper';
+import escapeRegex from '../util/string-helper';
 
 
 

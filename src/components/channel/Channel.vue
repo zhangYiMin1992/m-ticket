@@ -447,6 +447,9 @@ input {
   display: table;
   clear: both;
 }
+.content-container{
+    z-index: 1;
+}
 .channel-container {
   width: 100%;
 }
