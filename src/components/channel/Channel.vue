@@ -17,7 +17,7 @@
         <div calss="channel-container" id="main-container">
             <div class="search-channel-v2">
                 <div class="scv2-box">
-                    <span class="destination">上海<i></i></span>  
+                    <span class="destination" @click="showCityPicker()">{{currentCity.name}}<i></i></span>  
                     <div class="search-input-ctn">
                         <i class="icon-search5 search_btn"></i>
                         <p class="search-channel-box">搜索目的地/主题/关键字</p>
@@ -192,8 +192,10 @@ export default {
         code: code
       });
       self.getCurrentPosition(name, code);
-    
     });
+    bus.$on('changes',(item)=>{
+        self.citySelect(item);
+    })
   },
   computed:{
       isShowRecommend(){
@@ -333,7 +335,7 @@ export default {
             .catch(exHandler)
     },
     citySelect(data){
-        if(!data.code) return ;
+        if(!data.code) return ;//搜索框有值,失去焦点会触发change
         let historyCities = cache.store.get(HISTORY_CITY_ONLOCAL) || [];
         for(var i = 0,len = historyCities.length; i < len; i++){
             if(historyCities[i].code === data.code){
@@ -352,10 +354,14 @@ export default {
          this.getTicketInfo(data);
 
          this.getHotTicketInfo(data.name, data.code)
+         this.hideCityBox();
 
     },
     hideCityBox(){
         bus.$emit('closeRight','')
+    },
+    showCityPicker(){
+        bus.$emit('openRight','')
     }
   }
 };

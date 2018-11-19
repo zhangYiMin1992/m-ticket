@@ -1,7 +1,7 @@
 <template>
     <div class="city-picker">
         <header id="dest-header" v-if="!isApp">
-            <span class="city-header-back" id="dest-back"></span>
+            <span class="city-header-back" id="dest-back" @click="hideCityBox"></span>
             <h1>选择城市</h1>
         </header>
         <div :class="isApp ? 'no-header city-wrapper' : 'city-wrapper'">
@@ -18,7 +18,7 @@
             <div class="search-list" v-show="isSearchListShow">
                 <ul class="letter-city-list">
                     <li class="letter-name" v-for="(city,index) in filterCity" v-bind:key="index"
-                        v-bind:data-poiid="city.code" v-on:click="select(city)"
+                        v-bind:data-poiid="city.code" @click="select(city)"
                         v-bind:data-name="city.name">
                         {{city.name}}
                     </li>
@@ -45,7 +45,7 @@
                         <h2>定位城市</h2>
                         <ul class="text-container">
                             <li class="text-item">
-                                <div class="item-title">{{geoCity.name}}</div>
+                                <div class="item-title" @click="select(geoCity)">{{geoCity.name}}</div>
                             </li>
                         </ul>
                     </div> 
@@ -53,7 +53,7 @@
                         <h2>选择历史</h2>
                         <ul class="text-container">
                             <li :class="index == 0 ? 'selected' : ''" class="text-item" v-for="(city,index) in historyCities" :key="index">
-                                <div class="item-title">{{city.name}}</div>
+                                <div class="item-title" @click="select(city)">{{city.name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -61,16 +61,16 @@
                         <div class="city-section">
                             <h2>热门推荐</h2>
                             <ul class="text-container">
-                                <li class="text-item"
+                                <li class="text-item" @click="select(city)"
                                 v-for="(city,index) in popularCity" :key="index">
                                     <div class="item-title">{{city.name}}</div>
                                 </li>
                             </ul>
                         </div>
-                        <div class="location-title letter-list" v-for="item in citiesByLetters" :key="item.name">
+                        <div class="location-title letter-list" v-bind:id="'letterIndex' + item.letter" v-for="item in citiesByLetters" :key="item.name">
                             <h2>{{item.letter.toUpperCase()}}</h2>
                             <ul class="letter-city-list">
-                                <li class="letter-name" v-for="(city,index) in item.cities" :key="index">
+                                <li class="letter-name" @click="select(city)" v-for="(city,index) in item.cities" :key="index">
                                     {{city.name}}
                                 </li>
                             </ul>
@@ -80,15 +80,15 @@
                         <div class="city-section">
                             <h2>热门推荐</h2>
                             <ul class="text-container">
-                                <li class="text-item" v-for="city in popularCityOversea" :key="city.name">
+                                <li class="text-item" @click="select(city)" v-for="city in popularCityOversea" :key="city.name">
                                     <div class="item-title">{{city.name}}</div>
                                 </li>
                             </ul>
                         </div>
-                        <div class="location-title letter-list" v-for="item in citiesByLettersOversea" :key="item.letter">
+                        <div class="location-title letter-list" v-bind:id="'letterIndexOversea' + item.letter"  v-for="item in citiesByLettersOversea" :key="item.letter">
                             <h2>{{item.letter.toUpperCase()}}</h2>
                             <ul class="letter-city-list">
-                                <li class="letter-name" v-for="city in item.cities" :key="city.name">
+                                <li class="letter-name" @click="select(city)" v-for="city in item.cities" :key="city.name">
                                     {{city.name}}
                                 </li>
                             </ul>
@@ -97,18 +97,20 @@
                 </div> 
                 <div>
                     <ul class="indexer" v-show="!secondSelected" id="letterIndexer">
-                        <li v-for="item in indexer" :key="item">{{item}}</li>
+                        <li @click="anchorIndex(item)" v-for="item in indexer" :key="item">{{item}}</li>
                     </ul>
-                    <ul class="indexer" v-show="secondSelected" id="letterIndexer">
-                        <li v-for="item in indexer" :key="item">{{item}}</li>
+                    <ul class="indexer" v-show="secondSelected" id="letterIndexerOverSea">
+                        <li @click="anchorIndex(item,'overSea')" v-for="item in indexer" :key="item">{{item}}</li>
                     </ul>
                 </div>
                 <div class="indexer-show" id="J-big-show-letter" v-show="isLetterShow">{{currentLetter}}</div>
             </div>
         </div>
+        <div class="city-picker-mask" v-show="isMaskShow && isShowCityPicker"></div>
     </div>
 </template>
 <script>
+import bus from '../../../bus'
 import searchCity from './search';
 import emitter from '../../../mixins/emitter';
 const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -261,7 +263,21 @@ export default {
             
 
         },
-        select(){}
+        select(item){
+            bus.$emit('changes',item)
+        },
+        anchorIndex(letter,overSea){
+            this.currentLetter = letter
+            this.isLetterShow = true
+            let self = this,lable;
+            setTimeout(() => {
+                self.isLetterShow = false
+            }, 300);
+            lable = document.querySelector((overSea ? '#letterIndexOverSea' : '#letterIndex') + letter)
+            var offsetTop = lable ? lable.offsetTop : 0
+            var picker = document.querySelector('.city-list')
+            picker.scrollTop = offsetTop
+        }
     }
 }
 </script>
@@ -500,5 +516,15 @@ export default {
 }
 .search-list{
     margin-top: 110px;
+}
+.city-picker-mask {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    z-index: 99;
+    display: block;
+    background: #fff;
 }
 </style>

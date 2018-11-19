@@ -1,6 +1,6 @@
 <template>
     <transition name="slide-right" @after-enter="afterEnter" @before-leave="beforeLeave">
-        <div class="vue-wrapper">
+        <div class="vue-wrapper" v-show="show">
             <slot></slot>
         </div>
         
@@ -28,12 +28,13 @@ export default {
     mounted(){
         let self = this;
         this.$nextTick(function(){
-            self.$on('OPEN_RIGHT_SLIDER',function(){
+            bus.$on('openRight',function(){
                 self.open();
             });
             bus.$on('closeRight',function(){
                 self.close();
             });
+            
             if(!self.wid)return
             self.popstateListener = function(t){
                 self.show = !!(t.state && t.state.wrapper === self.wid);
@@ -75,9 +76,11 @@ export default {
         background-color:#fff;
     }
     .slide-right-enter-active,.slide-right-leave-avtive{
+        transition: transform 0.1s linear 0.1s;
         transform: translate(0, 0, 0);
     }
     .slide-right-enter,.slide-right-leave-active{
         transform: translate3d(100%, 0, 0);
+         transition: transform 0.1s linear 0.1s;
     }
 </style>
