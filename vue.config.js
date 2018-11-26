@@ -5,18 +5,18 @@ module.exports = {
     filenameHashing: false,
     pages: {
         index: {
-          // page 的入口
-          entry: 'src/main.js',
-          // 模板来源
-          template: 'public/index.html',
-          // 在 dist/index.html 的输出
-          filename: 'index.html',
-          // 当使用 title 选项时，
-          // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-          title: '景点门票',
-          // 在这个页面中包含的块，默认情况下会包含
-          // 提取出来的通用 chunk 和 vendor chunk。
-        //  chunks: ['chunk-vendors', 'chunk-common', 'index']
+            // page 的入口
+            entry: 'src/main.js',
+            // 模板来源
+            template: 'public/index.html',
+            // 在 dist/index.html 的输出
+            filename: 'index.html',
+            // 当使用 title 选项时，
+            // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
+            title: '景点门票',
+            // 在这个页面中包含的块，默认情况下会包含
+            // 提取出来的通用 chunk 和 vendor chunk。
+            //  chunks: ['chunk-vendors', 'chunk-common', 'index']
         },
         // 当使用只有入口的字符串格式时，
         // 模板会被推导为 `public/subpage.html`
@@ -27,7 +27,13 @@ module.exports = {
             entry: './src/channel.js',
             template: 'public/index.html',
             filename: 'channel.html',
-            title: 'it is channel'
+            title: 'test'
+        },
+        search:{
+            entry: 'src/search.js',
+            template: 'public/search.html',
+            filename: 'search.html',
+            title: '景点门票搜索'
         }
-      }
-  }
+    }
+}

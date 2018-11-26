@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>景点门票</title>
+    <meta name="keywords" content="景点门票">
+    <meta name="description" content="景点门票">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="applicable-device" content="mobile">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" sizes="72x72" href="src/styles/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="src/styles/images/apple-touch-icon-retina.png">
+    <link rel="shortcut icon" href="src/styles/images/favicon.ico" type="image/x-icon">
+    <link href="http://img4.tuniucdn.com/ms/2016072805/layout/flight_header/header.css" rel='stylesheet'>
+</head>
+<body>
+    <div id="search-placeholder"></div>
+    <script>
+        function QueryStringToJSON() {
+            // 将链接中？后面的部分按照&分割成字符串数组 
+            var pairs = location.search.slice(1).split('&');
+            var result = {};
+            pairs.forEach(function (pair) {
+                pair = pair.split('=');
+                result[pair[0]] = decodeURIComponent(pair[1] || '');
+            });
+
+            return JSON.parse(JSON.stringify(result));
+        }
+
+        var queryObj = QueryStringToJSON();
+
+        var keyword = queryObj['keyword'];
+        var themeId = queryObj['themeId'];
+
+        var ip = 'localhost';
+
+        var GDATA = {
+            keyword: keyword,
+            themeId: themeId, 
+            urls : {
+                "suggestionAjax": "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/SuggestionAjax",
+                "searchInfoAjax"    : "http://"+ip+":3301/apis/m.tuniu.com/m2015/mpChannel/searchInfoAjax"
+            }           
+        }
+
+        var G = {
+            isApp : false,
+            versionCmp : function(){
+                return 1
+            }
+        }
+    </script>
+</body>
+</html>

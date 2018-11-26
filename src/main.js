@@ -9,6 +9,7 @@ require('./styles/header.css')
 import flexible from './util/flexible'
 import Vue from 'vue'
 import App from './components/channel/Channel.vue'
+import axios from 'axios'
 import {
     moreScenic,
     nearbyScenic,
@@ -25,6 +26,7 @@ import {formatDistance, autoProtocol,imgAutoProtocolWebP} from './filters/string
 import Sticky from './directives/sticky'
 import back from './directives/back'
 
+Vue.prototype.$axios = axios 
 Vue.config.productionTip = false
 Vue.directive('Sticky', Sticky)
 Vue.directive('back', back)

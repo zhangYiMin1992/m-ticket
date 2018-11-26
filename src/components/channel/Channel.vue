@@ -13,12 +13,12 @@
                     :city-picker-init="cityPickerInit">
             </city-picker>
         </wrapper>
-        <search-panel></search-panel>
-        <div calss="channel-container" id="main-container">
+        <search-panel :is-app = "isApp"></search-panel>
+        <div calss="channel-container" v-show="isShowChannel" id="main-container">
             <div class="search-channel-v2">
                 <div class="scv2-box">
                     <span class="destination" @click="showCityPicker()">{{currentCity.name}}<i></i></span>  
-                    <div class="search-input-ctn">
+                    <div class="search-input-ctn" @click="showSearchPanel()">
                         <i class="icon-search5 search_btn"></i>
                         <p class="search-channel-box">搜索目的地/主题/关键字</p>
                     </div> 
@@ -362,7 +362,11 @@ export default {
     },
     showCityPicker(){
         bus.$emit('openRight','')
+    },
+    showSearchPanel(){
+        bus.$emit('showSearchPage','')
     }
+
   }
 };
 </script>
