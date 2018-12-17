@@ -23,12 +23,7 @@ module.exports = {
         // 并且如果找不到的话，就回退到 `public/index.html`。
         // 输出文件名会被推导为 `subpage.html`。
         //subpage: 'src/subpage/main.js'
-        test:{
-            entry: './src/channel.js',
-            template: 'public/index.html',
-            filename: 'channel.html',
-            title: 'test'
-        },
+       
         search:{
             entry: 'src/search.js',
             template: 'public/search.html',

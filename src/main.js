@@ -61,7 +61,7 @@ Vue.filter('matchProdText', matchProdText);
 Vue.filter('highlight', highlight);
 Vue.filter('formatDistance', formatDistance);
 
-new Vue({
+const app = new Vue({
     replace:true,
     data: {
         isApp :G.isApp,
@@ -79,6 +79,6 @@ citySelectBtn && (citySelectBtn.onclick = function () {
     app.$refs.channel.showCityPicker()
 });
 
-//export default app
+export default app
 
 
